@@ -6,10 +6,10 @@
 import random, pygame, sys,math
 from pygame.locals import *
 
-FPS = 5
+FPS = 10
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
-CELLSIZE = 20
+CELLSIZE = 10
 RADIUS = math.floor(CELLSIZE/2.5)
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
@@ -19,6 +19,8 @@ CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 #             R    G    B
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
+BLUE      = (  0,   0, 255)
+GOLD      = (255, 215,   0)
 RED       = (255,   0,   0)
 GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
@@ -129,8 +131,8 @@ def checkForKeyPress():
 
 def showStartScreen():
     titleFont = pygame.font.Font('freesansbold.ttf', 100)
-    titleSurf1 = titleFont.render('USU', True, WHITE, DARKGREEN)
-    titleSurf2 = titleFont.render('Agents', True, GREEN)
+    titleSurf1 = titleFont.render('Snake', True, GOLD, BLUE)
+    titleSurf2 = titleFont.render('Game', True, WHITE)
 
     degrees1 = 0
     degrees2 = 0
@@ -199,7 +201,7 @@ def drawWorm(wormCoords):
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, GREEN, wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
