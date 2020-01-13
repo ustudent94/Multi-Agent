@@ -1,14 +1,16 @@
 import pygame, random
 from pygame.constants import *
 
+
 #import constants
 from Assn1.Constant import CELLWIDTH, CELLHEIGHT, CELLSIZE, RIGHT, LEFT, UP, DOWN, HEAD, WHITE
+from Assn1.Bullet import Bullet
 
 
 #Worm class
 class Worm:
 
-    def __init__(self, id, upKey, downKey, rightKey, leftKey, color, direction):
+    def __init__(self, id, upKey, downKey, rightKey, leftKey,fireKey, color, direction):
         self.id = id
 
         #directional keys
@@ -16,6 +18,7 @@ class Worm:
         self.downKey = downKey
         self.rightKey = rightKey
         self.leftKey = leftKey
+        self.fireKey = fireKey
 
         self.color = color
         self.direction = direction
@@ -40,6 +43,10 @@ class Worm:
         return len(self.wormCoords) - 3
     def getCoord(self):
         return self.wormCoords
+    def getBullet(self):
+        return self.bullet
+    def getFired(self):
+        return self.fired
 
     def setDirection(self, direction):
         self.direction = direction
@@ -52,7 +59,7 @@ class Worm:
                              {'x': startx - 2, 'y': starty}]
 
     def eventHandler(self,event):
-
+        self.fired = False
         #number pad is constant and will work for any worm on the board
         if (event.key == self.leftKey or event.key == K_KP4) and self.direction != RIGHT:
             self.direction = LEFT
@@ -62,6 +69,9 @@ class Worm:
             self.direction = UP
         elif (event.key == self.downKey or event.key == K_KP2) and self.direction != UP:
             self.direction = DOWN
+        elif (event.key == self.fireKey):
+            self.loadBullet()
+            self.fired = True
 
     #test hit self
     def hitSelf(self):
@@ -74,7 +84,6 @@ class Worm:
     def hitEdge(self):
         return self.wormCoords[HEAD]['x'] == -1 or self.wormCoords[HEAD]['x'] == CELLWIDTH or self.wormCoords[HEAD]['y'] == -1 or self.wormCoords[HEAD]['y'] == CELLHEIGHT
 
-    #todo: test this with similar coordinate such as apple
     #test hit other snake
     #@param coordList: the wormCoords of the other snake you want to check against
     def hitObject(self, coordList):
@@ -104,7 +113,7 @@ class Worm:
         elif self.direction == LEFT:
             newHead = {'x': self.wormCoords[HEAD]['x'] - 1, 'y': self.wormCoords[HEAD]['y']}
         elif self.direction == RIGHT:
-            newHead = {'x': self.wormCoords[HEAD]['x'] + 1, 'y': self.wormCoords[HEAD]['y']}
+             newHead = {'x': self.wormCoords[HEAD]['x'] + 1, 'y': self.wormCoords[HEAD]['y']}
         self.wormCoords.insert(0, newHead)   #have already removed the last segment
 
     def drawWorm(self, DISPLAYSURF):
@@ -124,7 +133,10 @@ class Worm:
         DISPLAYSURF.blit(scoreSurf, scoreRect)
 
     def containsKey(self,key):
-        if key == self.upKey or key == self.downKey or key == self.rightKey or key == self.leftKey:
+        if key == self.upKey or key == self.downKey or key == self.rightKey or key == self.leftKey or key == self.fireKey or key == K_KP2 or key == K_KP4 or key == K_KP6 or key == K_KP8:
             return True
         else:
             return False
+
+    def loadBullet(self):
+        self.bullet = Bullet(self.direction,self.wormCoords[HEAD])

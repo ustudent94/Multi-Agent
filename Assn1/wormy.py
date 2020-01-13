@@ -35,13 +35,17 @@ def main():
 def runGame():
     from Assn1.Worm import Worm
     from Assn1.Apple import Apple
+    from Assn1.Bullet import Bullet
 
     #Create array of worms
-    worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a, BLUE, RIGHT)}
+    worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT,K_KP0, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a,K_SPACE, BLUE, RIGHT)}
 
 
     # Start the apple in a random place.
     apples = {Apple(1),Apple(2)}
+
+    #Start a list of bullets
+    bullets = []
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -57,6 +61,8 @@ def runGame():
                         if keyPressed:
                             worm.eventHandler(event)
                             #worm.moveWorm()
+                            if worm.getFired():
+                                bullets.append(worm.getBullet())
 
 
 
@@ -92,6 +98,10 @@ def runGame():
 
         for apple in apples:
             apple.drawApple(DISPLAYSURF)
+
+        for bullet in bullets:
+            bullet.moveBullet()
+            bullet.drawBullet(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
