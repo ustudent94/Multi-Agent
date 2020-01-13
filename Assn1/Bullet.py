@@ -5,6 +5,11 @@ class Bullet:
     def __init__(self, direction,coords):
         self.direction = direction
         self.coords = [coords] #[{'x': startx, 'y': starty}
+        #shifts bullet one from head
+        self.moveBullet()
+
+    def getCoord(self):
+        return self.coords
 
     def moveBullet(self):
         # move the worm by adding a segment in the direction it is moving

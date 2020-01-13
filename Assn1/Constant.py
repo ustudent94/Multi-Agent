@@ -1,6 +1,6 @@
 import math
 
-FPS = 3
+FPS = 1
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 
@@ -15,6 +15,7 @@ BLUE      = (  0,   0, 255)
 GOLD      = (255, 215,   0)
 PINK      = (255, 105, 180)
 RED       = (255,   0,   0)
+GREY      = (169, 169, 169)
 GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)

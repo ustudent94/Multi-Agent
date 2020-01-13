@@ -38,7 +38,9 @@ def runGame():
     from Assn1.Bullet import Bullet
 
     #Create array of worms
-    worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT,K_KP0, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a,K_SPACE, BLUE, RIGHT)}
+    #worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT,K_KP0, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a,K_SPACE, BLUE, RIGHT)}
+    #for laptop debug
+    worms = {Worm(1, K_i, K_k, K_l, K_j, K_8, GREEN, RIGHT),Worm(2, K_w, K_s, K_d, K_a, K_2, BLUE, RIGHT)}
 
 
     # Start the apple in a random place.
@@ -46,6 +48,9 @@ def runGame():
 
     #Start a list of bullets
     bullets = []
+
+    #start a list of rocks
+    rocks = []
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -71,9 +76,21 @@ def runGame():
             hit = worm.hitSelf()
             if not hit:
                 hit = worm.hitEdge()
+                if not hit:
+                    for bullet in bullets:
+                        # check if head hit by bullet
+                        hit = worm.hitObject(bullet.getCoord())
+                        if not hit:
+                            #checks for hits on body and turns tail to stone
+                            rocks.append(worm.tailToStone(bullet.getCoord()[0]))
+                    if not hit:
+                        #check if hit rock
+                        for rock in rocks:
+                            worm.hitObject(rock.getCoord())
             for otherWorm in worms:
                 if otherWorm != worm and not hit:
                     hit = worm.hitObject(otherWorm.getCoord())
+
             #if worm hits game over
             if hit:
                 return  # game over
@@ -102,6 +119,9 @@ def runGame():
         for bullet in bullets:
             bullet.moveBullet()
             bullet.drawBullet(DISPLAYSURF)
+
+        for rock in rocks:
+            rock.drawRock(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 

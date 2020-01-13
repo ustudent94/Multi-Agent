@@ -5,6 +5,7 @@ from pygame.constants import *
 #import constants
 from Assn1.Constant import CELLWIDTH, CELLHEIGHT, CELLSIZE, RIGHT, LEFT, UP, DOWN, HEAD, WHITE
 from Assn1.Bullet import Bullet
+from Assn1.Rock import Rock
 
 
 #Worm class
@@ -85,13 +86,28 @@ class Worm:
         return self.wormCoords[HEAD]['x'] == -1 or self.wormCoords[HEAD]['x'] == CELLWIDTH or self.wormCoords[HEAD]['y'] == -1 or self.wormCoords[HEAD]['y'] == CELLHEIGHT
 
     #test hit other snake
-    #@param coordList: the wormCoords of the other snake you want to check against
+    #@param coordList: the coordinates of the other object you want to check against
     def hitObject(self, coordList):
         hit = False
         for block in coordList:
             if block['x'] == self.wormCoords[HEAD]['x'] and block['y'] == self.wormCoords[HEAD]['y']:
                 return True # game over\
         return hit
+    #test for bullet hit and return to to cut off
+    def tailToStone(self, coords):
+        hit = False
+        rockList = []
+        blockNum = 1
+        for block in self.wormCoords[1:]:
+            if coords['x'] == block['x'] and coords['y'] == block['y']:
+                hit = True
+            if hit:
+                rockList.append(block)
+                del self.wormCoords[blockNum]
+            else:
+                blockNum += 1
+        rocks = Rock(rockList)
+        return rocks
 
     #test hit apple
     #@param apple: Apple coordinates
