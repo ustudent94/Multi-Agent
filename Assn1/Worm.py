@@ -2,11 +2,11 @@ import pygame, random
 from pygame.constants import *
 
 #import constants
-from Assn1.wormy import CELLWIDTH, CELLHEIGHT, CELLSIZE, RIGHT, LEFT, UP, DOWN, HEAD
+from Assn1.Constant import CELLWIDTH, CELLHEIGHT, CELLSIZE, RIGHT, LEFT, UP, DOWN, HEAD, WHITE
 
 
 #Worm class
-class worm:
+class Worm:
 
     def __init__(self, id, upKey, downKey, rightKey, leftKey, color, direction):
         self.id = id
@@ -38,6 +38,8 @@ class worm:
         return self.direction
     def getScore(self):
         return len(self.wormCoords) - 3
+    def getCoord(self):
+        return self.wormCoords
 
     def setDirection(self, direction):
         self.direction = direction
@@ -50,23 +52,27 @@ class worm:
                              {'x': startx - 2, 'y': starty}]
 
     def eventHandler(self,event):
+
         #number pad is constant and will work for any worm on the board
-        if (event.key == self.leftKey or event.key == K_a) and self.direction != RIGHT:
-            direction = self.leftKey
-        elif (event.key == self.rightKey or event.key == K_d) and self.direction != LEFT:
-            direction = RIGHT
-        elif (event.key == self.upKey or event.key == K_w) and self.direction != DOWN:
-            direction = UP
-        elif (event.key == self.downKey or event.key == K_s) and self.direction != UP:
-            direction = DOWN
+        if (event.key == self.leftKey or event.key == K_KP4) and self.direction != RIGHT:
+            self.direction = LEFT
+        elif (event.key == self.rightKey or event.key == K_KP6) and self.direction != LEFT:
+            self.direction = RIGHT
+        elif (event.key == self.upKey or event.key == K_KP8) and self.direction != DOWN:
+            self.direction = UP
+        elif (event.key == self.downKey or event.key == K_KP2) and self.direction != UP:
+            self.direction = DOWN
 
     #test hit self
-    def hitObject(self):
+    def hitSelf(self):
         hit = False
         for wormBody in self.wormCoords[1:]:
             if wormBody['x'] == self.wormCoords[HEAD]['x'] and wormBody['y'] == self.wormCoords[HEAD]['y']:
                 return True# game over
         return hit
+
+    def hitEdge(self):
+        return self.wormCoords[HEAD]['x'] == -1 or self.wormCoords[HEAD]['x'] == CELLWIDTH or self.wormCoords[HEAD]['y'] == -1 or self.wormCoords[HEAD]['y'] == CELLHEIGHT
 
     #todo: test this with similar coordinate such as apple
     #test hit other snake
@@ -74,7 +80,7 @@ class worm:
     def hitObject(self, coordList):
         hit = False
         for block in coordList:
-            if block['x'] == coordList[HEAD]['x'] and block['y'] == coordList[HEAD]['y']:
+            if block['x'] == self.wormCoords[HEAD]['x'] and block['y'] == self.wormCoords[HEAD]['y']:
                 return True # game over\
         return hit
 
@@ -85,8 +91,10 @@ class worm:
             apple = apple.newLocation() # set a new apple somewhere
             return True
         else:
-            del self.wormCoords[-1]  # remove worm's tail segment
             return False
+
+    def removeTail(self):
+        del self.wormCoords[-1]  # remove worm's tail segment
 
     def moveWorm(self):
         # move the worm by adding a segment in the direction it is moving
@@ -108,3 +116,16 @@ class worm:
             pygame.draw.rect(DISPLAYSURF, self.color, wormSegmentRect)
             wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
             pygame.draw.rect(DISPLAYSURF, self.color, wormInnerSegmentRect)
+
+    def drawScore(self, BASICFONT,DISPLAYSURF):
+        score = self.getScore()
+        scoreSurf = BASICFONT.render('Score ' + str(self.id) + ': %s' % (score), True, WHITE)
+        scoreRect = scoreSurf.get_rect()
+        scoreRect.topleft = ((self.id -1)*120, 10)
+        DISPLAYSURF.blit(scoreSurf, scoreRect)
+
+    def containsKey(self,key):
+        if key == self.upKey or key == self.downKey or key == self.rightKey or key == self.leftKey:
+            return True
+        else:
+            return False

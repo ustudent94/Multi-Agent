@@ -1,5 +1,5 @@
-import math, pygame
-from Assn1.wormy import CELLSIZE, RED, RADIUS
+import math, pygame, random
+from Assn1.Constant import CELLSIZE, RED, RADIUS, CELLHEIGHT, CELLWIDTH
 
 
 class Apple:
@@ -7,6 +7,8 @@ class Apple:
     def __init__(self,id,color = RED,):
         self.id = id
         self.color = color
+        self.location = self.newLocation()
+
 
     def getId(self):
         return self.id
@@ -14,11 +16,17 @@ class Apple:
     def getColor(self):
         return self.color
 
-    def drawApple(coord,DISPLAYSURF):
-        x = coord['x'] * CELLSIZE
-        y = coord['y'] * CELLSIZE
-        xcenter = coord['x'] * CELLSIZE + math.floor(CELLSIZE / 2)
-        ycenter = coord['y'] * CELLSIZE + math.floor(CELLSIZE / 2)
+    def getLocation(self):
+        return self.location
+
+    def drawApple(self,DISPLAYSURF):
+        x = self.location['x'] * CELLSIZE
+        y = self.location['y'] * CELLSIZE
+        xcenter = self.location['x'] * CELLSIZE + math.floor(CELLSIZE / 2)
+        ycenter = self.location['y'] * CELLSIZE + math.floor(CELLSIZE / 2)
         # appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
         # pygame.draw.rect(DISPLAYSURF, RED, appleRect)
         pygame.draw.circle(DISPLAYSURF, RED, (xcenter, ycenter), RADIUS)
+
+    def newLocation(self):
+        return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
