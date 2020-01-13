@@ -31,3 +31,11 @@ class Apple:
     def newLocation(self):
         self.location = {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
         return self.location
+
+    #todo: remove after debug
+    def newLocation(self):
+        if self.id == 1:
+            self.location = {'x': 8, 'y': 3}
+        if self.id == 2:
+            self.location = {'x': 10, 'y': 8}
+        return self.location

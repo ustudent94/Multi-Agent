@@ -82,11 +82,14 @@ def runGame():
                         hit = worm.hitObject(bullet.getCoord())
                         if not hit:
                             #checks for hits on body and turns tail to stone
-                            rocks.append(worm.tailToStone(bullet.getCoord()[0]))
+                            tempRock = worm.tailToStone(bullet.getCoord()[0])
+                            if not tempRock.isEmpty():
+                                rocks.append(tempRock)
                     if not hit:
                         #check if hit rock
                         for rock in rocks:
-                            worm.hitObject(rock.getCoord())
+                            if worm.hitObject(rock.getCoord()):
+                                return #game over
             for otherWorm in worms:
                 if otherWorm != worm and not hit:
                     hit = worm.hitObject(otherWorm.getCoord())

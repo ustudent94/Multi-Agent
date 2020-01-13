@@ -9,6 +9,9 @@ class Rock:
     def getCoord(self):
         return self.coords
 
+    def isEmpty(self):
+        return len(self.coords) == 0
+
     def drawRock(self, DISPLAYSURF):
         for coord in self.coords:
             x = coord['x'] * CELLSIZE

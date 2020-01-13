@@ -59,6 +59,25 @@ class Worm:
                              {'x': startx - 1, 'y': starty},
                              {'x': startx - 2, 'y': starty}]
 
+    #todo: delete after debug
+    def resetWormCoords(self):
+        startx = 5
+        if self.id == 2:
+            startx = 10
+            starty = 10
+            self.direction = UP
+
+        elif self.id == 1:
+            starty = 3
+
+
+
+        self.wormCoords = [{'x': startx, 'y': starty},
+                             {'x': startx - 1, 'y': starty},
+                             {'x': startx - 2, 'y': starty}]
+
+
+
     def eventHandler(self,event):
         self.fired = False
         #number pad is constant and will work for any worm on the board
