@@ -88,7 +88,6 @@ class Worm:
     #@param apple: Apple coordinates
     def ateApple(self,apple):
         if self.wormCoords[HEAD]['x'] == apple['x'] and self.wormCoords[HEAD]['y'] == apple['y']:
-            apple = apple.newLocation() # set a new apple somewhere
             return True
         else:
             return False

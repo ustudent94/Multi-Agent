@@ -29,4 +29,5 @@ class Apple:
         pygame.draw.circle(DISPLAYSURF, RED, (xcenter, ycenter), RADIUS)
 
     def newLocation(self):
-        return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
+        self.location = {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
+        return self.location

@@ -1,6 +1,6 @@
 import math
 
-FPS = 5
+FPS = 3
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 

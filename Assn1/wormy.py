@@ -75,8 +75,11 @@ def runGame():
             for apple in apples:
                 #todo: check that you don't need the returned boolean
                 eaten = worm.ateApple(apple.getLocation())
+                if eaten:
+                    apple.newLocation()
             if not eaten:
                 worm.removeTail()
+
             #move the worm
             worm.moveWorm()
 
