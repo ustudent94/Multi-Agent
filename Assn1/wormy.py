@@ -6,7 +6,9 @@
 import random, pygame, sys,math
 from pygame.locals import *
 
-FPS = 10
+from Assn1 import Worm
+
+FPS = 1
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 10
@@ -15,7 +17,6 @@ assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell siz
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
 CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
-
 #             R    G    B
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
@@ -85,7 +86,7 @@ def runGame():
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
                 return # game over
 
-        # check if worm has eaten an apply
+        # check if worm has eaten an apple
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
@@ -107,6 +108,8 @@ def runGame():
         drawWorm(wormCoords)
         drawApple(apple)
         drawScore(len(wormCoords) - 3)
+        #drawScore(len(wormCoords) - 3,1,0,10)
+        #drawScore(len(wormCoords) - 3, 2, 120, 10)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -193,6 +196,12 @@ def drawScore(score):
     scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
+    DISPLAYSURF.blit(scoreSurf, scoreRect)
+
+def drawScore(score,id,x,y):
+    scoreSurf = BASICFONT.render('Score'+str(id)+': %s' % (score), True, WHITE)
+    scoreRect = scoreSurf.get_rect()
+    scoreRect.topleft = (x, y)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
 
