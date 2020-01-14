@@ -38,9 +38,9 @@ def runGame():
     from Assn1.Bullet import Bullet
 
     #Create array of worms
-    #worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT,K_KP0, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a,K_SPACE, BLUE, RIGHT)}
+    worms = {Worm(1, K_UP, K_DOWN, K_RIGHT, K_LEFT,K_KP0, GREEN, RIGHT), Worm(2, K_w, K_s, K_d, K_a,K_SPACE, BLUE, RIGHT)}
     #for laptop debug
-    worms = {Worm(1, K_i, K_k, K_l, K_j, K_8, GREEN, RIGHT),Worm(2, K_w, K_s, K_d, K_a, K_2, BLUE, RIGHT)}
+    #worms = {Worm(1, K_i, K_k, K_l, K_j, K_8, GREEN, RIGHT),Worm(2, K_w, K_s, K_d, K_a, K_2, BLUE, RIGHT)}
 
 
     # Start the apple in a random place.
@@ -97,17 +97,20 @@ def runGame():
             #if worm hits game over
             if hit:
                 return  # game over
+
+
+
+            eaten = False
             #check to see if apple was eaten
             for apple in apples:
-                #todo: check that you don't need the returned boolean
                 eaten = worm.ateApple(apple.getLocation())
                 if eaten:
                     apple.newLocation()
-            if not eaten:
-                worm.removeTail()
+                    worm.addTail()
 
-            #move the worm
+            # move the worm
             worm.moveWorm()
+            worm.removeTail()
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()

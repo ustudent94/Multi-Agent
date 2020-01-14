@@ -59,16 +59,16 @@ class Worm:
                              {'x': startx - 1, 'y': starty},
                              {'x': startx - 2, 'y': starty}]
 
-    #todo: delete after debug
-    def resetWormCoords(self):
-        startx = 5
-        if self.id == 2:
-            startx = 10
-            starty = 10
-            self.direction = UP
-
-        elif self.id == 1:
-            starty = 3
+    # #FOR DEBUG ONLY
+    # def resetWormCoords(self):
+    #     startx = 5
+    #     if self.id == 2:
+    #         startx = 10
+    #         starty = 10
+    #         self.direction = UP
+    #
+    #     elif self.id == 1:
+    #         starty = 3
 
 
 
@@ -138,6 +138,18 @@ class Worm:
 
     def removeTail(self):
         del self.wormCoords[-1]  # remove worm's tail segment
+
+    def addTail(self):
+        # move the worm by adding a segment in the direction it is moving
+        if self.direction == DOWN:
+            newHead = {'x': self.wormCoords[HEAD]['x'], 'y': self.wormCoords[HEAD]['y'] - 1}
+        elif self.direction == UP:
+            newHead = {'x': self.wormCoords[HEAD]['x'], 'y': self.wormCoords[HEAD]['y'] + 1}
+        elif self.direction == RIGHT:
+            newHead = {'x': self.wormCoords[HEAD]['x'] - 1, 'y': self.wormCoords[HEAD]['y']}
+        elif self.direction == LEFT:
+             newHead = {'x': self.wormCoords[HEAD]['x'] + 1, 'y': self.wormCoords[HEAD]['y']}
+        self.wormCoords.append(newHead)   #have already removed the last segment
 
     def moveWorm(self):
         # move the worm by adding a segment in the direction it is moving
