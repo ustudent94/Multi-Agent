@@ -4,13 +4,17 @@ import pygame
 class Bullet:
     def __init__(self, direction,coords):
         self.direction = direction
-        self.coords = [coords] #[{'x': startx, 'y': starty}
-        #shifts bullet one from head
+        self.coords = [coords]
+
+        #shifts bullet in front of head
         self.moveBullet()
+
+
 
     def getCoord(self):
         return self.coords
 
+    #moves the bullet
     def moveBullet(self):
         # move the worm by adding a segment in the direction it is moving
         if self.direction == UP:
@@ -24,6 +28,7 @@ class Bullet:
         self.coords.insert(0, newHead)   #have already removed the last segment
         del self.coords[-1]
 
+    #draws the bullet
     def drawBullet(self,DISPLAYSURF):
         x = self.coords[HEAD]['x'] * CELLSIZE
         y = self.coords[HEAD]['y'] * CELLSIZE

@@ -25,33 +25,45 @@ class Worm:
         self.direction = direction
         self.resetWormCoords()
 
+
+
     def getId(self):
         return self.id
+
     def getUp(self):
         return self.upKey
+
     def getDown(self):
         return self.downKey
+
     def getRight(self):
         return self.rightKey
+
     def getLeft(self):
         return  self.leftKey
+
     def getColor(self):
         return self.color
 
     def getDirection(self):
         return self.direction
+
     def getScore(self):
         return len(self.wormCoords) - 3
+
     def getCoord(self):
         return self.wormCoords
+
     def getBullet(self):
         return self.bullet
+
     def getFired(self):
         return self.fired
 
     def setDirection(self, direction):
         self.direction = direction
 
+    #initializes worm coordinates
     def resetWormCoords(self):
         startx = random.randint(5, CELLWIDTH - 6)
         starty = random.randint(5, CELLHEIGHT - 6)
@@ -69,15 +81,11 @@ class Worm:
     #
     #     elif self.id == 1:
     #         starty = 3
+    #     self.wormCoords = [{'x': startx, 'y': starty},
+    #                          {'x': startx - 1, 'y': starty},
+    #                          {'x': startx - 2, 'y': starty}]
 
-
-
-        self.wormCoords = [{'x': startx, 'y': starty},
-                             {'x': startx - 1, 'y': starty},
-                             {'x': startx - 2, 'y': starty}]
-
-
-
+    #handles key presses given an event
     def eventHandler(self,event):
         self.fired = False
         #number pad is constant and will work for any worm on the board
@@ -101,6 +109,7 @@ class Worm:
                 return True# game over
         return hit
 
+    #test if worm has hit edge
     def hitEdge(self):
         return self.wormCoords[HEAD]['x'] == -1 or self.wormCoords[HEAD]['x'] == CELLWIDTH or self.wormCoords[HEAD]['y'] == -1 or self.wormCoords[HEAD]['y'] == CELLHEIGHT
 
@@ -135,10 +144,11 @@ class Worm:
             return True
         else:
             return False
-
+    #removes last segment of worm
     def removeTail(self):
         del self.wormCoords[-1]  # remove worm's tail segment
 
+    #adds to the end of worm segments
     def addTail(self):
         # move the worm by adding a segment in the direction it is moving
         if self.direction == DOWN:
@@ -178,12 +188,12 @@ class Worm:
         scoreRect = scoreSurf.get_rect()
         scoreRect.topleft = ((self.id -1)*120, 10)
         DISPLAYSURF.blit(scoreSurf, scoreRect)
-
+    #given a key returns whether this is one of the active keys for keypresses
     def containsKey(self,key):
         if key == self.upKey or key == self.downKey or key == self.rightKey or key == self.leftKey or key == self.fireKey or key == K_KP2 or key == K_KP4 or key == K_KP6 or key == K_KP8:
             return True
         else:
             return False
-
+    #initializes a bullet to be fired
     def loadBullet(self):
         self.bullet = Bullet(self.direction,self.wormCoords[HEAD])

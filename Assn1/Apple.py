@@ -7,7 +7,7 @@ class Apple:
     def __init__(self,id,color = RED,):
         self.id = id
         self.color = color
-        self.location = self.newLocation()
+        self.coord = self.newLocation()
 
 
     def getId(self):
@@ -16,21 +16,21 @@ class Apple:
     def getColor(self):
         return self.color
 
-    def getLocation(self):
-        return self.location
-
+    def getCoord(self):
+        return self.coord
+    #initializes coordinates
+    def newLocation(self):
+        self.coord = {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
+        return self.coord
+    #draws the apple
     def drawApple(self,DISPLAYSURF):
-        x = self.location['x'] * CELLSIZE
-        y = self.location['y'] * CELLSIZE
-        xcenter = self.location['x'] * CELLSIZE + math.floor(CELLSIZE / 2)
-        ycenter = self.location['y'] * CELLSIZE + math.floor(CELLSIZE / 2)
+        x = self.coord['x'] * CELLSIZE
+        y = self.coord['y'] * CELLSIZE
+        xcenter = self.coord['x'] * CELLSIZE + math.floor(CELLSIZE / 2)
+        ycenter = self.coord['y'] * CELLSIZE + math.floor(CELLSIZE / 2)
         # appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
         # pygame.draw.rect(DISPLAYSURF, RED, appleRect)
         pygame.draw.circle(DISPLAYSURF, RED, (xcenter, ycenter), RADIUS)
-
-    def newLocation(self):
-        self.location = {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
-        return self.location
 
     # #FOR DEBUG ONLY
     # def newLocation(self):

@@ -6,12 +6,16 @@ class Rock:
     def __init__(self,coords):
         self.coords = coords
 
+
+
     def getCoord(self):
         return self.coords
 
+    #checks for coordinates returns false if empty
     def isEmpty(self):
         return len(self.coords) == 0
 
+    #draws the rocks
     def drawRock(self, DISPLAYSURF):
         for coord in self.coords:
             x = coord['x'] * CELLSIZE

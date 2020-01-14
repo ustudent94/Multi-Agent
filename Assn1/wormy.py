@@ -3,7 +3,7 @@
 # http://inventwithpython.com/pygame
 # Released under a "Simplified BSD" license
 
-import random, pygame, sys
+import pygame, sys
 from pygame.locals import *
 
 from Assn1.Constant import *
@@ -85,6 +85,8 @@ def runGame():
                             tempRock = worm.tailToStone(bullet.getCoord()[0])
                             if not tempRock.isEmpty():
                                 rocks.append(tempRock)
+                        else:
+                            return #game over
                     if not hit:
                         #check if hit rock
                         for rock in rocks:
@@ -103,7 +105,7 @@ def runGame():
             eaten = False
             #check to see if apple was eaten
             for apple in apples:
-                eaten = worm.ateApple(apple.getLocation())
+                eaten = worm.ateApple(apple.getCoord())
                 if eaten:
                     apple.newLocation()
                     worm.addTail()
@@ -185,10 +187,6 @@ def terminate():
     sys.exit()
 
 
-def getRandomLocation():
-    return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
-
-
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
     gameSurf = gameOverFont.render('Game', True, WHITE)
@@ -209,38 +207,6 @@ def showGameOverScreen():
         if checkForKeyPress():
             pygame.event.get() # clear event queue
             return
-
-def drawScore(score):
-    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
-    scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (WINDOWWIDTH - 120, 10)
-    DISPLAYSURF.blit(scoreSurf, scoreRect)
-
-def drawScore(score,id,x,y):
-    scoreSurf = BASICFONT.render('Score'+str(id)+': %s' % (score), True, WHITE)
-    scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (x, y)
-    DISPLAYSURF.blit(scoreSurf, scoreRect)
-
-
-def drawWorm(wormCoords):
-    for coord in wormCoords:
-        x = coord['x'] * CELLSIZE
-        y = coord['y'] * CELLSIZE
-        wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, GREEN, wormSegmentRect)
-        wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
-
-
-def drawApple(coord):
-    x = coord['x'] * CELLSIZE
-    y = coord['y'] * CELLSIZE
-    xcenter = coord['x'] * CELLSIZE + math.floor(CELLSIZE/2)
-    ycenter = coord['y'] * CELLSIZE+ math.floor(CELLSIZE/2)
-    #appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    #pygame.draw.rect(DISPLAYSURF, RED, appleRect)
-    pygame.draw.circle(DISPLAYSURF, RED,(xcenter,ycenter),RADIUS)
 
 
 def drawGrid():
