@@ -7,7 +7,7 @@ class Charger:
     def __init__(self,id,color = YELLOW):
         self.id = id
         self.color = color
-        self.coords = {'x': 1, 'y': 1}
+        self.coords = {'x': 1, 'y': CELLHEIGHT-2}
 
 
     def getId(self):
@@ -17,7 +17,7 @@ class Charger:
         return self.color
 
     def getCoord(self):
-        return self.coord
+        return self.coords
 
     #draws self
     def drawSelf(self):

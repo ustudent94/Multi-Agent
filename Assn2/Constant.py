@@ -1,6 +1,6 @@
 import math,pygame
 
-FPS = 20
+FPS = 250
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 
@@ -21,6 +21,11 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 YELLOW = (255,255,0)
 BGCOLOR = BLACK
+DARKBROWN = (139,  69,  19)
+MIDBROWN  = (205, 133,  63)
+LIGHTBROWN= (222, 184, 135)
+
+
 
 UP = 'up'
 DOWN = 'down'
@@ -30,4 +35,4 @@ RIGHT = 'right'
 HEAD = 0 # syntactic sugar: index of the worm's head
 RADIUS = math.floor(CELLSIZE/2.5)
 DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-DIRECTIONS = [RIGHT,DOWN,LEFT,UP]
+DIRECTIONS = [UP,RIGHT,DOWN,LEFT] #ORDER MATTERS

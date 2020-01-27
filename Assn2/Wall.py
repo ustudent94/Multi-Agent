@@ -1,11 +1,11 @@
 from Assn2.Constant import *
-import pygame
+import pygame, random
 
 class Wall:
 
     def __init__(self):
-        self.direction = RIGHT
-        self.coords = [{'x': 0, 'y': 0}]
+        self.direction = UP
+        self.coords = [{'x': 0, 'y': CELLHEIGHT}]
         self.initCoords()
 
 
@@ -13,10 +13,12 @@ class Wall:
         return self.coords
 
     def initCoords(self):
+        #Bordering wall
         for direction in DIRECTIONS:
             self.direction = direction
             while not self.hitEdge():
                 self.addWall()
+
 
     #draws the rocks
     def drawSelf(self):
@@ -24,7 +26,7 @@ class Wall:
             x = coord['x'] * CELLSIZE
             y = coord['y'] * CELLSIZE
             Rect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-            pygame.draw.rect(DISPLAYSURF, WHITE, Rect)
+            pygame.draw.rect(DISPLAYSURF, GREY, Rect)
             innerRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
             pygame.draw.rect(DISPLAYSURF, WHITE, innerRect)
 
@@ -38,7 +40,21 @@ class Wall:
             newBlock = {'x': self.coords[-1]['x'] - 1, 'y': self.coords[-1]['y']}
         elif self.direction == RIGHT:
             newBlock = {'x': self.coords[-1]['x'] + 1, 'y': self.coords[-1]['y']}
+        #1 in 5 chance of jagged wall
+        if random.randint(0, CELLWIDTH - 1) % 5 == 0:
+            self.addJagged()
         self.coords.append(newBlock)  # have already removed the last segment
+    def addJagged(self):
+        if self.direction == UP:
+            newBlock = {'x': self.coords[-1]['x'] + 1, 'y': self.coords[-1]['y']}
+        elif self.direction == DOWN:
+            newBlock = {'x': self.coords[-1]['x'] - 1, 'y': self.coords[-1]['y']}
+        elif self.direction == LEFT:
+            newBlock = {'x': self.coords[-1]['x'], 'y': self.coords[-1]['y'] - 1}
+        elif self.direction == RIGHT:
+            newBlock = {'x': self.coords[-1]['x'], 'y': self.coords[-1]['y'] + 1}
+        if newBlock['x'] != 1 and newBlock['y'] != CELLHEIGHT-3:
+            self.coords.append(newBlock)  # have already removed the last segment
 
     def hitEdge(self):
         #return self.coords[-1]['x'] == -1 or self.coords[-1]['x'] == CELLWIDTH or self.coords[-1]['y'] ==-1 or self.coords[-1]['y'] == CELLHEIGHT
@@ -53,4 +69,10 @@ class Wall:
             hit = True
         return hit
 
+    def hit(self, coord):
+        hit = False
+        for block in self.coords:
+            if block == coord:
+                hit = True
+        return hit
 

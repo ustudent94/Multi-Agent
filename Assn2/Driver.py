@@ -34,20 +34,59 @@ def main():
 def runGame():
     from Assn2.Wall import Wall
     from Assn2.Roomba import Roomba
+    from Assn2.Dirt import Dirt
+    numDirt = 100
+    count = 0
+    detached = False
+    rotated = False
+    blindMove = False
 
     wall = Wall()
-    roomba = Roomba(1,RIGHT)
+    roomba = Roomba(1,UP,BLUE)
+    dirt=[]
+    while count < numDirt:
+        dirt.append(Dirt())
+        while(wall.hit(dirt[count].getCoord())):
+            dirt[count].newLocation()
+        count = count +1
 
     while True: # main game loop
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                key = event.key
+                if event.key == K_ESCAPE:
+                    terminate()
+        for pile in dirt:
+            if(pile.hit(roomba.getCoord())):
+                pile.suckDirt()
+                roomba.maxDirt = max(roomba.maxDirt,pile.amount)
+        wall.hit(roomba.getNext())
+
+        if(not roomba.finishedExteriorLoop):
+            while(wall.hit(roomba.getNext())):
+                 roomba.rotate(1)
+            if(not wall.hit(roomba.getNext(-1))):
+                roomba.rotate(-1)
+
+        if(roomba.finishedExteriorLoop and roomba.hitEdge()):
+            roomba.rotate(1)
+
         roomba.moveSelf()
-        #if roomba.hitObject(wall.getCoord()):
-        if roomba.hitEdge():
-            roomba.changeDirection()
+
+
+        #roomba.hitEdge()
+        #if (wall.hit(roomba.getNext())):
+            #roomba.setWAC()
+            #roomba.changeDirection()
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
         wall.drawSelf()
         roomba.drawSelf()
+        for pile in dirt:
+            pile.drawSelf()
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         #set something to end the loop
