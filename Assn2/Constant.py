@@ -36,3 +36,4 @@ HEAD = 0 # syntactic sugar: index of the worm's head
 RADIUS = math.floor(CELLSIZE/2.5)
 DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 DIRECTIONS = [UP,RIGHT,DOWN,LEFT] #ORDER MATTERS
+BATTERY = 2000

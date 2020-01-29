@@ -21,11 +21,14 @@ class Roomba:
         self.direction = direction
         self.dirNum = self.getDirNum()
         self.charger = Charger(id)
-        self.batteryLife = 200
+        self.batteryLife = BATTERY
+        self.batteryLow = False
+        self.seekPoint = False
+        self.seekCoord = self.charger.getCoord()
         self.disabled = False
         self.coords = self.charger.getCoord() #self.charger.getCoord()
         self.maxDirt = 0
-        self.loopStartCoord = self.coords
+        self.loopStartCoord = self.charger.getCoord()
         self.loopNum = 0
         self.finishedExteriorLoop = False
         self.WAC = 0 # wallAvoidCount
@@ -69,12 +72,19 @@ class Roomba:
              newHead = {'x': self.coords['x'] + 1, 'y': self.coords['y']}
         return newHead
 
+    def getLoopStartCoord(self):
+        return self.loopStartCoord
+
     def setDirection(self, direction):
         self.direction = direction
+        self.dirNum = self.getDirNum()
 
     def setDir(self, num):
         self.direction = DIRECTIONS[num]
         self.dirNum = self.getDirNum()
+
+    def setLoopCoord(self,x,y):
+        self.loopStartCoord = {'x': x, 'y': y}
 
     def foundDirt(self):
         return self.maxDirt > 0
@@ -131,20 +141,39 @@ class Roomba:
         if(not self.disabled):
             self.coords = self.getNext()  #have already removed the last segment
         self.disabled = False
+        self.batteryLife = self.batteryLife -1
+        if(self.batteryLife < CELLHEIGHT + CELLWIDTH):
+            self.batteryLow = True
+            self.seekCoord = self.charger.getCoord()
+            self.seekPoint = True
+        if(self.coords == self.charger.getCoord()):
+            self.batteryLife = BATTERY
+            self.batteryLow = False
+            self.seekCoord = self.getLoopStartCoord()
+            self.seekPoint = True
+
         #move diagonally to the start of next loop
         if(self.coords == self.loopStartCoord):
              self.shiftLoop()
+
+
     #this assumes nothing is in the way
     def shiftLoop(self):
-        if (not self.foundDirt()):
+        if (not self.foundDirt() and (not self.seekPoint or not self.finishedExteriorLoop)):
             self.finishedExteriorLoop = True
             self.rotate(1)
             self.moveSelf()
             self.rotate(1)
             self.moveSelf()
             self.rotate(-1)
-            self.loopStartCoord = self.coords
+            self.setLoopCoord(self.getLoopStartCoord()['x'] + 1,self.getLoopStartCoord()['y'] - 1)
             self.loopNum = self.loopNum + 1
+            # if(self.getLoopStartCoord()['y'] < CELLHEIGHT/2):
+            #     self.loopStartCoord = self.charger.getCoord()
+            #     self.finishedExteriorLoop = False
+            #     self.loopNum = 0
+            #todo: add criteria for starting the loops over
+
         self.maxDirt = 0
 
     #draws the bullet
@@ -180,10 +209,52 @@ class Roomba:
         else:
             self.rotDir = -1
 
+    def setHeading(self):
+        curX = self.coords['x']
+        curY = self.coords['y']
+        seekX = self.seekCoord['x']
+        seekY = self.seekCoord['y']
+        difX = abs(curX-seekX)
+        difY = abs(curY-seekY)
+        if(curX == seekX and curY == seekY):
+            self.setDirection(UP)
+            self.seekPoint= False
+        elif(curX == seekX and curY > seekY):
+            self.setDirection(UP)
+        elif (curX == seekX and curY < seekY):
+            self.setDirection(DOWN)
+        elif (curX > seekX and curY == seekY):
+            self.setDirection(LEFT)
+        elif (curX < seekX and curY == seekY):
+            self.setDirection(RIGHT)
 
-    # def changeDirection(self):
-    #     direction = DIRECTIONS[random.randint(5, CELLWIDTH - 6) % 4]
-    #     while direction == self.direction:
-    #         direction = DIRECTIONS[random.randint(5, CELLWIDTH - 6) % 4]
-    #     self.direction = direction
-    #     return direction
+        elif(curX > seekX and curY > seekY and difX > difY):
+            self.setDirection(LEFT)
+        elif (curX < seekX and curY < seekY and difX > difY):
+            self.setDirection(RIGHT)
+        elif (curX > seekX and curY < seekY and difX > difY):
+            self.setDirection(LEFT)
+        elif (curX < seekX and curY > seekY and difX > difY):
+            self.setDirection(RIGHT)
+
+        elif(curX > seekX and curY > seekY and difX < difY):
+            self.setDirection(UP)
+        elif (curX < seekX and curY < seekY and difX < difY):
+            self.setDirection(DOWN)
+        elif (curX > seekX and curY < seekY and difX < difY):
+            self.setDirection(DOWN)
+        elif (curX < seekX and curY > seekY and difX < difY):
+            self.setDirection(UP)
+
+        # # if (self.coords['x'] == self.seekCoord['x'] and self.coords['y'] == self.seekCoord['y']):
+        # #     self.seekPoint == False
+        # if(self.coords['x'] > self.seekCoord['x'] and self.coords['y'] >= self.seekCoord['y']):
+        #     self.setDirection(LEFT)
+        # if (self.coords['x'] <= self.seekCoord['x'] and self.coords['y'] > self.seekCoord['y']):
+        #     self.setDirection(UP)
+        # if (self.coords['x'] >= self.seekCoord['x'] and self.coords['y'] < self.seekCoord['y']):
+        #     self.setDirection(DOWN)
+        # if(self.coords['x'] < self.seekCoord['x'] and self.coords['y'] <= self.seekCoord['y']):
+        #     self.setDirection(RIGHT)
+
+

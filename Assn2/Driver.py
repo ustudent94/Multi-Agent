@@ -35,6 +35,7 @@ def runGame():
     from Assn2.Wall import Wall
     from Assn2.Roomba import Roomba
     from Assn2.Dirt import Dirt
+    from Assn2.Obstacle import Obstacle
     numDirt = 100
     count = 0
     detached = False
@@ -44,6 +45,9 @@ def runGame():
     wall = Wall()
     roomba = Roomba(1,UP,BLUE)
     dirt=[]
+    obstacles = [Obstacle(3,RIGHT,3,43,'furniture')]
+
+
     while count < numDirt:
         dirt.append(Dirt())
         while(wall.hit(dirt[count].getCoord())):
@@ -67,11 +71,14 @@ def runGame():
         if(not roomba.finishedExteriorLoop):
             while(wall.hit(roomba.getNext())):
                  roomba.rotate(1)
-            if(not wall.hit(roomba.getNext(-1))):
+            if(not wall.hit(roomba.getNext(-1)) and not roomba.seekPoint):
                 roomba.rotate(-1)
 
-        if(roomba.finishedExteriorLoop and roomba.hitEdge()):
+        if(roomba.finishedExteriorLoop and roomba.hitEdge() and not roomba.seekPoint):
             roomba.rotate(1)
+
+        if(roomba.seekPoint):
+            roomba.setHeading()
 
         roomba.moveSelf()
 
@@ -87,6 +94,8 @@ def runGame():
         roomba.drawSelf()
         for pile in dirt:
             pile.drawSelf()
+        for obstacle in obstacles:
+            obstacle.drawSelf()
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         #set something to end the loop

@@ -1,7 +1,7 @@
 from Assn2.Constant import *
 import pygame
 
-class Bullet:
+class MovingObstacle:
     def __init__(self, direction,coords):
         self.direction = direction
         self.coords = [coords]
@@ -15,7 +15,7 @@ class Bullet:
         return self.coords
 
     #moves the bullet
-    def moveBullet(self):
+    def moveSelf(self):
         # move the worm by adding a segment in the direction it is moving
         if self.direction == UP:
             newHead = {'x': self.coords[HEAD]['x'], 'y': self.coords[HEAD]['y'] - 1}
@@ -29,7 +29,7 @@ class Bullet:
         del self.coords[-1]
 
     #draws the bullet
-    def drawBullet(self,DISPLAYSURF):
+    def drawSelf(self,DISPLAYSURF):
         x = self.coords[HEAD]['x'] * CELLSIZE
         y = self.coords[HEAD]['y'] * CELLSIZE
         xcenter = self.coords[HEAD]['x'] * CELLSIZE + math.floor(CELLSIZE / 2)
