@@ -33,6 +33,9 @@ class Roomba:
         self.finishedExteriorLoop = False
         self.WAC = 0 # wallAvoidCount
         self.OAC = 0 # objectAvoidCount
+        self.avoid = False
+        self.avDir = self.direction
+        self.rowCol = 0
 
 
 
@@ -185,18 +188,26 @@ class Roomba:
         pygame.draw.circle(DISPLAYSURF, self.color, (xcenter, ycenter), RADIUS)
         self.charger.drawSelf()
 
-    def avoid(self):
-        # move the worm by adding a segment in the direction it is moving
-        if(self.WAC >0):
-            self.setDir((self.dirNum + self.rotDir) % 4) #shift direction
-            self.WAC = self.WAC-1
+    def setAvoid(self):
+        self.avoid = True
+        self.avDir = self.direction
+        if(self.direction == UP or self.direction == DOWN):
+            self.rowCol = self.coords['x']
+        elif(self.direction == LEFT or self.direction == RIGHT):
+            self.rowCol = self.coords['y']
 
-        if(self.OAC == 2):
-            self.setDir((self.dirNum + self.rotDir) % 4)
-            self.OAC = self.OAC  + self.rotDir
-        elif(self.OAC ==1):
-            self.setDir((self.dirNum - self.rotDir) % 4)
-            self.OAC = self.OAC - self.rotDir
+    # def avoid(self):
+    #     # move the worm by adding a segment in the direction it is moving
+    #     if(self.WAC >0):
+    #         self.setDir((self.dirNum + self.rotDir) % 4) #shift direction
+    #         self.WAC = self.WAC-1
+    #
+    #     if(self.OAC == 2):
+    #         self.setDir((self.dirNum + self.rotDir) % 4)
+    #         self.OAC = self.OAC  + self.rotDir
+    #     elif(self.OAC ==1):
+    #         self.setDir((self.dirNum - self.rotDir) % 4)
+    #         self.OAC = self.OAC - self.rotDir
 
     def rotate(self,rotDir = 0):
         if rotDir == 0:
@@ -246,15 +257,22 @@ class Roomba:
         elif (curX < seekX and curY > seekY and difX < difY):
             self.setDirection(UP)
 
-        # # if (self.coords['x'] == self.seekCoord['x'] and self.coords['y'] == self.seekCoord['y']):
-        # #     self.seekPoint == False
-        # if(self.coords['x'] > self.seekCoord['x'] and self.coords['y'] >= self.seekCoord['y']):
-        #     self.setDirection(LEFT)
-        # if (self.coords['x'] <= self.seekCoord['x'] and self.coords['y'] > self.seekCoord['y']):
-        #     self.setDirection(UP)
-        # if (self.coords['x'] >= self.seekCoord['x'] and self.coords['y'] < self.seekCoord['y']):
-        #     self.setDirection(DOWN)
-        # if(self.coords['x'] < self.seekCoord['x'] and self.coords['y'] <= self.seekCoord['y']):
-        #     self.setDirection(RIGHT)
+    def returnToPath(self,obstacle):
+        #conditions: if roomba is at row or column set at initialization
+        #if there is nothing blocking returning to the direction set at initialization
+        retPath = False
+        if(self.avDir == UP and self.direction == LEFT):
+           if(not obstacle.hit(self.getNext(1)) and self.getCoord()['x'] == self.rowCol):
+                retPath = True
+        if (self.avDir == RIGHT and self.direction == UP):
+            if (not obstacle.hit(self.getNext(1)) and self.getCoord()['y'] == self.rowCol):
+                retPath = True
+        if (self.avDir == DOWN and self.direction == RIGHT):
+            if (not obstacle.hit(self.getNext(1)) and self.getCoord()['x'] == self.rowCol):
+                retPath = True
+        if (self.avDir == LEFT and self.direction == DOWN):
+            if (not obstacle.hit(self.getNext(1)) and self.getCoord()['y'] == self.rowCol):
+                retPath = True
 
+        return  retPath
 

@@ -53,7 +53,7 @@ class Wall:
             newBlock = {'x': self.coords[-1]['x'], 'y': self.coords[-1]['y'] - 1}
         elif self.direction == RIGHT:
             newBlock = {'x': self.coords[-1]['x'], 'y': self.coords[-1]['y'] + 1}
-        if newBlock['x'] != 1 and newBlock['y'] != CELLHEIGHT-3:
+        if (not self.corner(newBlock)):
             self.coords.append(newBlock)  # have already removed the last segment
 
     def hitEdge(self):
@@ -76,3 +76,38 @@ class Wall:
                 hit = True
         return hit
 
+    def corner(self,newBlock):
+        corner = False
+        #bottom left
+        if(newBlock['x'] == 1 and newBlock['y'] == CELLHEIGHT-2):
+            corner = True
+        if(newBlock['x'] == 1 and newBlock['y'] == CELLHEIGHT-3):
+            corner = True
+        if(newBlock['x'] == 2 and newBlock['y'] == CELLHEIGHT-2):
+            corner = True
+
+        #bottom right
+        if(newBlock['x'] == CELLWIDTH-2 and newBlock['y'] == CELLHEIGHT-2):
+            corner = True
+        if(newBlock['x'] == CELLWIDTH-2 and newBlock['y'] == CELLHEIGHT-3):
+            corner = True
+        if(newBlock['x'] == CELLWIDTH-3 and newBlock['y'] == CELLHEIGHT-2):
+            corner = True
+
+        #top right
+        if(newBlock['x'] == CELLWIDTH-2 and newBlock['y'] == 1):
+            corner = True
+        if(newBlock['x'] == CELLWIDTH-2 and newBlock['y'] == 2):
+            corner = True
+        if(newBlock['x'] == CELLWIDTH-3 and newBlock['y'] == 1):
+            corner = True
+
+        #top left
+        if(newBlock['x'] == 1 and newBlock['y'] == 1):
+            corner = True
+        if(newBlock['x'] == 1 and newBlock['y'] == 2):
+            corner = True
+        if(newBlock['x'] == 2 and newBlock['y'] == 1):
+            corner = True
+
+        return corner

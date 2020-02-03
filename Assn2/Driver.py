@@ -36,6 +36,7 @@ def runGame():
     from Assn2.Roomba import Roomba
     from Assn2.Dirt import Dirt
     from Assn2.Obstacle import Obstacle
+    from Assn2.MovingObstacle import MovingObstacle
     numDirt = 100
     count = 0
     detached = False
@@ -45,7 +46,8 @@ def runGame():
     wall = Wall()
     roomba = Roomba(1,UP,BLUE)
     dirt=[]
-    obstacles = [Obstacle(3,RIGHT,3,43,'furniture')]
+    obstacles = [Obstacle(3,RIGHT,3,40,'furniture')]
+    movingObstacle = MovingObstacle(LEFT,{'x': CELLWIDTH -2, 'y': 3})
 
 
     while count < numDirt:
@@ -62,26 +64,53 @@ def runGame():
                 key = event.key
                 if event.key == K_ESCAPE:
                     terminate()
+
+        #suck up dirt if hit
         for pile in dirt:
             if(pile.hit(roomba.getCoord())):
                 pile.suckDirt()
                 roomba.maxDirt = max(roomba.maxDirt,pile.amount)
-        wall.hit(roomba.getNext())
 
-        if(not roomba.finishedExteriorLoop):
-            while(wall.hit(roomba.getNext())):
-                 roomba.rotate(1)
-            if(not wall.hit(roomba.getNext(-1)) and not roomba.seekPoint):
-                roomba.rotate(-1)
 
-        if(roomba.finishedExteriorLoop and roomba.hitEdge() and not roomba.seekPoint):
+        #moving obstacle turn away if wall is hit
+        while(wall.hit(movingObstacle.getNext())):
+            movingObstacle.rotate(-1)
+
+        if (movingObstacle.hit(roomba.getNext())):
+            obs = movingObstacle
+            roomba.setAvoid()
+
+        for obstacle in obstacles:
+            if(obstacle.hit(roomba.getNext())):
+                obs = obstacle
+                roomba.setAvoid()
+
+        if(roomba.avoid and roomba.returnToPath(obs)):
             roomba.rotate(1)
+            roomba.avoid = False
+        elif(roomba.avoid):
+            while (obs.hit(roomba.getNext())):
+                roomba.rotate(1)
+            if (not obs.hit(roomba.getNext(-1))):
+                roomba.rotate(-1)
+        else:
+            if(not roomba.finishedExteriorLoop):
+                while(wall.hit(roomba.getNext())):
+                     roomba.rotate(1)
+                if(not wall.hit(roomba.getNext(-1)) and not roomba.seekPoint):
+                    roomba.rotate(-1)
 
-        if(roomba.seekPoint):
-            roomba.setHeading()
+            if(roomba.finishedExteriorLoop and roomba.hitEdge() and not roomba.seekPoint):
+                roomba.rotate(1)
+
+            if(roomba.seekPoint):
+                roomba.setHeading()
 
         roomba.moveSelf()
 
+        if(movingObstacle.moveCount % 30 == 0):
+            movingObstacle.moveSelf()
+        movingObstacle.moveCount = movingObstacle.moveCount +1
 
         #roomba.hitEdge()
         #if (wall.hit(roomba.getNext())):
@@ -92,6 +121,7 @@ def runGame():
         drawGrid()
         wall.drawSelf()
         roomba.drawSelf()
+        movingObstacle.drawSelf()
         for pile in dirt:
             pile.drawSelf()
         for obstacle in obstacles:
