@@ -171,11 +171,13 @@ class Roomba:
             self.rotate(-1)
             self.setLoopCoord(self.getLoopStartCoord()['x'] + 1,self.getLoopStartCoord()['y'] - 1)
             self.loopNum = self.loopNum + 1
-            # if(self.getLoopStartCoord()['y'] < CELLHEIGHT/2):
-            #     self.loopStartCoord = self.charger.getCoord()
-            #     self.finishedExteriorLoop = False
-            #     self.loopNum = 0
-            #todo: add criteria for starting the loops over
+            #starts looping at outer shell again
+            if(self.getLoopStartCoord()['y'] < CELLHEIGHT/2):
+                self.loopStartCoord = self.charger.getCoord()
+                self.finishedExteriorLoop = False
+                self.loopNum = 0
+                self.seekPoint = True
+                self.seekCoord = self.loopStartCoord
 
         self.maxDirt = 0
 

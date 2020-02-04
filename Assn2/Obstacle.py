@@ -32,7 +32,7 @@ class Obstacle:
             y = coord['y'] * CELLSIZE
             Rect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
             pygame.draw.rect(DISPLAYSURF, RED, Rect)
-            innerRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
+            innerRect = pygame.Rect(x + 2, y + 2, CELLSIZE - 4, CELLSIZE - 4)
             pygame.draw.rect(DISPLAYSURF, self.color, innerRect)
 
     def addSegments(self):

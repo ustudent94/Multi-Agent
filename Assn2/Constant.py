@@ -1,6 +1,6 @@
 import math,pygame
 
-FPS = 50
+FPS = 500
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 

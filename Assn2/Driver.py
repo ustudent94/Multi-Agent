@@ -46,7 +46,7 @@ def runGame():
     wall = Wall()
     roomba = Roomba(1,UP,BLUE)
     dirt=[]
-    obstacles = [Obstacle(3,RIGHT,3,40,'furniture')]
+    obstacles = [Obstacle(3,RIGHT,5,37,'furniture'),Obstacle(3,LEFT,CELLWIDTH-5,10,'drop'),Obstacle(3,UP,20,20,'generic'),Obstacle(3,DOWN,30,5,'table')]
     movingObstacle = MovingObstacle(LEFT,{'x': CELLWIDTH -2, 'y': 3})
 
 
@@ -76,7 +76,11 @@ def runGame():
         while(wall.hit(movingObstacle.getNext())):
             movingObstacle.rotate(-1)
 
-        if (movingObstacle.hit(roomba.getNext())):
+        for obstacle in obstacles:
+            while(obstacle.hit(movingObstacle.getNext())):
+                movingObstacle.rotate(-1)
+
+        if (movingObstacle.hit(roomba.getNext()) and (wall.hit(roomba.getNext(-1)) or roomba.finishedExteriorLoop )):
             obs = movingObstacle
             roomba.setAvoid()
 
@@ -102,6 +106,11 @@ def runGame():
 
             if(roomba.finishedExteriorLoop and roomba.hitEdge() and not roomba.seekPoint):
                 roomba.rotate(1)
+                for obstacle in obstacles:
+                    if (obstacle.hit(roomba.getNext())):
+                        obs = obstacle
+                        roomba.setAvoid()
+                        roomba.rotate(1)
 
             if(roomba.seekPoint):
                 roomba.setHeading()
@@ -120,12 +129,13 @@ def runGame():
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
         wall.drawSelf()
-        roomba.drawSelf()
+
         movingObstacle.drawSelf()
         for pile in dirt:
             pile.drawSelf()
         for obstacle in obstacles:
             obstacle.drawSelf()
+        roomba.drawSelf()
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         #set something to end the loop
