@@ -4,10 +4,10 @@ from Assn2.Constant import *
 
 class Charger:
 
-    def __init__(self,id,color = YELLOW):
+    def __init__(self,id,chargerCoords, color = YELLOW):
         self.id = id
         self.color = color
-        self.coords = {'x': 1, 'y': CELLHEIGHT-2}
+        self.coords = chargerCoords #{'x': 1, 'y': CELLHEIGHT-2}
 
 
     def getId(self):

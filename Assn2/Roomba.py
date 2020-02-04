@@ -12,15 +12,16 @@ from Assn2.Charger import Charger
 class Roomba:
 
     # def __init__(self, id, upKey, downKey, rightKey, leftKey,fireKey, color, direction):
-    def __init__(self, id, direction,color = GREY):
+    def __init__(self, id, direction,color = GREY, chargerCoords = {'x': 1, 'y': CELLHEIGHT-2}, loopIncX = 1, loopIncY = 1):
         self.id = id
 
         self.color = color
         self.rotDir = 1 # only based on positive or negative directions up,right + left,right -
         #-1 clockwise 1 clockwise direction
+        self.initDirection = direction
         self.direction = direction
         self.dirNum = self.getDirNum()
-        self.charger = Charger(id)
+        self.charger = Charger(id,chargerCoords)
         self.batteryLife = BATTERY
         self.batteryLow = False
         self.seekPoint = False
@@ -36,6 +37,8 @@ class Roomba:
         self.avoid = False
         self.avDir = self.direction
         self.rowCol = 0
+        self.loopIncX = loopIncX
+        self.loopIncY = loopIncY
 
 
 
@@ -169,10 +172,11 @@ class Roomba:
             self.rotate(1)
             self.moveSelf()
             self.rotate(-1)
-            self.setLoopCoord(self.getLoopStartCoord()['x'] + 1,self.getLoopStartCoord()['y'] - 1)
+            self.setLoopCoord(self.getLoopStartCoord()['x'] + self.loopIncX,self.getLoopStartCoord()['y'] - self.loopIncY)
             self.loopNum = self.loopNum + 1
             #starts looping at outer shell again
-            if(self.getLoopStartCoord()['y'] < CELLHEIGHT/2):
+            # if(self.getLoopStartCoord()['y'] < CELLHEIGHT/2):
+            if (self.loopNum > CELLHEIGHT / 2):
                 self.loopStartCoord = self.charger.getCoord()
                 self.finishedExteriorLoop = False
                 self.loopNum = 0
@@ -230,7 +234,7 @@ class Roomba:
         difX = abs(curX-seekX)
         difY = abs(curY-seekY)
         if(curX == seekX and curY == seekY):
-            self.setDirection(UP)
+            self.setDirection(self.initDirection)
             self.seekPoint= False
         elif(curX == seekX and curY > seekY):
             self.setDirection(UP)
